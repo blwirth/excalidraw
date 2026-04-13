@@ -66,6 +66,7 @@ import type {
   ExcalidrawElement,
   ExcalidrawEllipseElement,
   ExcalidrawLinearElement,
+  ExcalidrawParallelogramElement,
   ExcalidrawRectangleElement,
   ExcalidrawSelectionElement,
   ExcalidrawTextContainer,
@@ -85,6 +86,7 @@ import {
   elbowArrowIcon,
   EllipseIcon,
   LineIcon,
+  ParallelogramIcon,
   RectangleIcon,
   roundArrowIcon,
   sharpArrowIcon,
@@ -100,11 +102,17 @@ const GAP_VERTICAL = 10;
 type ExcalidrawConvertibleElement =
   | ExcalidrawRectangleElement
   | ExcalidrawDiamondElement
+  | ExcalidrawParallelogramElement
   | ExcalidrawEllipseElement
   | ExcalidrawLinearElement;
 
 // indicates order of switching
-const GENERIC_TYPES = ["rectangle", "diamond", "ellipse"] as const;
+const GENERIC_TYPES = [
+  "rectangle",
+  "diamond",
+  "parallelogram",
+  "ellipse",
+] as const;
 // indicates order of switching
 const LINEAR_TYPES = [
   "line",
@@ -302,6 +310,7 @@ const Panel = ({
       ? [
           ["rectangle", RectangleIcon],
           ["diamond", DiamondIcon],
+          ["parallelogram", ParallelogramIcon],
           ["ellipse", EllipseIcon],
         ]
       : [];

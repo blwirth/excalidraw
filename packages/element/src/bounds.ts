@@ -537,6 +537,33 @@ export const getDiamondPoints = (element: ExcalidrawElement) => {
   return [topX, topY, rightX, rightY, bottomX, bottomY, leftX, leftY];
 };
 
+// Standard flowchart input/output parallelogram: top edge shifted right,
+// bottom edge shifted left. Slant is a fixed 15° from vertical in v1.
+export const PARALLELOGRAM_SKEW_RATIO = Math.tan((15 * Math.PI) / 180);
+
+export const getParallelogramPoints = (element: ExcalidrawElement) => {
+  const offset = Math.floor(element.height * PARALLELOGRAM_SKEW_RATIO) + 1;
+  const topLeftX = offset;
+  const topLeftY = 0;
+  const topRightX = element.width;
+  const topRightY = 0;
+  const bottomRightX = element.width - offset;
+  const bottomRightY = element.height;
+  const bottomLeftX = 0;
+  const bottomLeftY = element.height;
+
+  return [
+    topLeftX,
+    topLeftY,
+    topRightX,
+    topRightY,
+    bottomRightX,
+    bottomRightY,
+    bottomLeftX,
+    bottomLeftY,
+  ];
+};
+
 // reference: https://eliot-jones.com/2019/12/cubic-bezier-curve-bounding-boxes
 const getBezierValueForT = (
   t: number,

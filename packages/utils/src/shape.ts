@@ -48,6 +48,7 @@ import type {
   ExcalidrawIframeElement,
   ExcalidrawImageElement,
   ExcalidrawLinearElement,
+  ExcalidrawParallelogramElement,
   ExcalidrawRectangleElement,
   ExcalidrawSelectionElement,
   ExcalidrawTextElement,
@@ -105,12 +106,16 @@ export type GeometricShape<Point extends GlobalPoint | LocalPoint> =
 type RectangularElement =
   | ExcalidrawRectangleElement
   | ExcalidrawDiamondElement
+  | ExcalidrawParallelogramElement
   | ExcalidrawFrameLikeElement
   | ExcalidrawEmbeddableElement
   | ExcalidrawImageElement
   | ExcalidrawIframeElement
   | ExcalidrawTextElement
   | ExcalidrawSelectionElement;
+
+// Matches PARALLELOGRAM_SKEW_RATIO in element/src/bounds.ts (15° from vertical).
+const PARALLELOGRAM_SKEW_RATIO = Math.tan((15 * Math.PI) / 180);
 
 // polygon
 export const getPolygonShape = <Point extends GlobalPoint | LocalPoint>(
@@ -131,6 +136,14 @@ export const getPolygonShape = <Point extends GlobalPoint | LocalPoint>(
       pointRotateRads(pointFrom(x + width, cy), center, angle),
       pointRotateRads(pointFrom(cx, y + height), center, angle),
       pointRotateRads(pointFrom(x, cy), center, angle),
+    );
+  } else if (element.type === "parallelogram") {
+    const offset = height * PARALLELOGRAM_SKEW_RATIO;
+    data = polygon(
+      pointRotateRads(pointFrom(x + offset, y), center, angle),
+      pointRotateRads(pointFrom(x + width, y), center, angle),
+      pointRotateRads(pointFrom(x + width - offset, y + height), center, angle),
+      pointRotateRads(pointFrom(x, y + height), center, angle),
     );
   } else {
     data = polygon(

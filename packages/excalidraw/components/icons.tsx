@@ -348,6 +348,15 @@ export const DiamondIcon = createIcon(
   tablerIconProps,
 );
 
+export const ParallelogramIcon = createIcon(
+  <g strokeWidth="1.5" strokeLinejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M8 5 L21 5 L16 19 L3 19 Z" />
+  </g>,
+
+  tablerIconProps,
+);
+
 // tabler-icons: circle
 export const EllipseIcon = createIcon(
   <g strokeWidth="1.5">
