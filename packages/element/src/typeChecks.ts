@@ -183,6 +183,7 @@ export const isBindableElement = (
     (!element.locked || includeLocked === true) &&
     (element.type === "rectangle" ||
       element.type === "diamond" ||
+      element.type === "parallelogram" ||
       element.type === "ellipse" ||
       element.type === "image" ||
       element.type === "iframe" ||
@@ -236,6 +237,7 @@ export const isTextBindableContainer = (
     (!element.locked || includeLocked === true) &&
     (element.type === "rectangle" ||
       element.type === "diamond" ||
+      element.type === "parallelogram" ||
       element.type === "ellipse" ||
       isArrowElement(element))
   );
