@@ -26,6 +26,7 @@ import {
   deconstructRectanguloidElement,
   elementCenterPoint,
   getDiamondBaseCorners,
+  getParallelogramPoints,
   FOCUS_POINT_SIZE,
   getOmitSidesForEditorInterface,
   getTransformHandles,
@@ -483,6 +484,24 @@ const renderBindingHighlightForBindableElement_simple = (
             return pointFrom<GlobalPoint>(rotatedPoint[0], rotatedPoint[1]);
           },
         );
+      } else if (suggestedBinding.element.type === "parallelogram") {
+        const el = suggestedBinding.element;
+        const [tlX, tlY, trX, trY, brX, brY, blX, blY] =
+          getParallelogramPoints(el);
+        const localMidpoints = [
+          { x: (trX + brX) / 2, y: (trY + brY) / 2 }, // RIGHT edge
+          { x: (brX + blX) / 2, y: (brY + blY) / 2 }, // BOTTOM edge
+          { x: (blX + tlX) / 2, y: (blY + tlY) / 2 }, // LEFT edge
+          { x: (tlX + trX) / 2, y: (tlY + trY) / 2 }, // TOP edge
+        ];
+        midpoints = localMidpoints.map((point) => {
+          const globalPoint = pointFrom<GlobalPoint>(
+            point.x + el.x,
+            point.y + el.y,
+          );
+          const rotatedPoint = pointRotateRads(globalPoint, center, el.angle);
+          return pointFrom<GlobalPoint>(rotatedPoint[0], rotatedPoint[1]);
+        });
       } else {
         const basePoints = [
           {
@@ -868,6 +887,31 @@ const renderBindingHighlightForBindableElement_complex = (
         midpoints = curves.map((curve) => {
           const point = bezierEquation(curve, 0.5);
           const rotatedPoint = pointRotateRads(point, center, element.angle);
+          return {
+            x: rotatedPoint[0] - element.x,
+            y: rotatedPoint[1] - element.y,
+          };
+        });
+      } else if (element.type === "parallelogram") {
+        const center = elementCenterPoint(element, allElementsMap);
+        const [tlX, tlY, trX, trY, brX, brY, blX, blY] =
+          getParallelogramPoints(element);
+        const basePoints = [
+          { x: (tlX + trX) / 2, y: (tlY + trY) / 2 }, // TOP
+          { x: (trX + brX) / 2, y: (trY + brY) / 2 }, // RIGHT
+          { x: (brX + blX) / 2, y: (brY + blY) / 2 }, // BOTTOM
+          { x: (blX + tlX) / 2, y: (blY + tlY) / 2 }, // LEFT
+        ];
+        midpoints = basePoints.map((point) => {
+          const globalPoint = pointFrom<GlobalPoint>(
+            point.x + element.x,
+            point.y + element.y,
+          );
+          const rotatedPoint = pointRotateRads(
+            globalPoint,
+            center,
+            element.angle,
+          );
           return {
             x: rotatedPoint[0] - element.x,
             y: rotatedPoint[1] - element.y,
