@@ -61,6 +61,7 @@ import {
   getArrowheadPoints,
   getDiamondPoints,
   getElementAbsoluteCoords,
+  getParallelogramPoints,
 } from "./bounds";
 import { shouldTestInside } from "./collision";
 
@@ -230,6 +231,7 @@ export const generateRoughOptions = (
     case "iframe":
     case "embeddable":
     case "diamond":
+    case "parallelogram":
     case "ellipse": {
       options.fillStyle = element.fillStyle;
       options.fill = isTransparent(element.backgroundColor)
@@ -818,6 +820,20 @@ const _generateElementShape = (
       }
       return shape;
     }
+    case "parallelogram": {
+      const [tlX, tlY, trX, trY, brX, brY, blX, blY] =
+        getParallelogramPoints(element);
+      const shape: ElementShapes[typeof element.type] = generator.polygon(
+        [
+          [tlX, tlY],
+          [trX, trY],
+          [brX, brY],
+          [blX, blY],
+        ],
+        generateRoughOptions(element, false, isDarkMode),
+      );
+      return shape;
+    }
     case "diamond": {
       let shape: ElementShapes[typeof element.type];
 
@@ -1080,6 +1096,7 @@ export const getElementShape = <Point extends GlobalPoint | LocalPoint>(
   switch (element.type) {
     case "rectangle":
     case "diamond":
+    case "parallelogram":
     case "frame":
     case "magicframe":
     case "embeddable":

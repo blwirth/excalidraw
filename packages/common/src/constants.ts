@@ -449,6 +449,7 @@ export const TOOL_TYPE = {
   lasso: "lasso",
   rectangle: "rectangle",
   diamond: "diamond",
+  parallelogram: "parallelogram",
   ellipse: "ellipse",
   arrow: "arrow",
   line: "line",

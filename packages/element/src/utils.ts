@@ -34,7 +34,11 @@ import type {
   Zoom,
 } from "@excalidraw/excalidraw/types";
 
-import { elementCenterPoint, getDiamondPoints } from "./bounds";
+import {
+  elementCenterPoint,
+  getDiamondPoints,
+  getParallelogramPoints,
+} from "./bounds";
 
 import { generateLinearCollisionShape } from "./shape";
 
@@ -56,6 +60,7 @@ import type {
   ExcalidrawElement,
   ExcalidrawFreeDrawElement,
   ExcalidrawLinearElement,
+  ExcalidrawParallelogramElement,
   ExcalidrawRectanguloidElement,
 } from "./types";
 
@@ -456,6 +461,78 @@ export function deconstructDiamondElement(
   ];
 
   const shape = [sides, corners.flat()] as ElementShape;
+
+  setElementShapesCacheEntry(element, shape, offset);
+
+  return shape;
+}
+
+/**
+ * Get the **unrotated** building components of a parallelogram element
+ * as four line segments with no corner curves (v1 doesn't round corners).
+ *
+ * @param element The element to deconstruct
+ * @param offset An optional outward offset applied along each side's normal
+ * @returns Tuple of line segments (0) and empty curves array (1)
+ */
+export function deconstructParallelogramElement(
+  element: ExcalidrawParallelogramElement,
+  offset: number = 0,
+): [LineSegment<GlobalPoint>[], Curve<GlobalPoint>[]] {
+  const cachedShape = getElementShapesCacheEntry(element, offset);
+
+  if (cachedShape) {
+    return cachedShape;
+  }
+
+  const [tlX, tlY, trX, trY, brX, brY, blX, blY] =
+    getParallelogramPoints(element);
+
+  const toGlobal = (lx: number, ly: number) =>
+    pointFrom<GlobalPoint>(element.x + lx, element.y + ly);
+
+  const topLeft = toGlobal(tlX, tlY);
+  const topRight = toGlobal(trX, trY);
+  const bottomRight = toGlobal(brX, brY);
+  const bottomLeft = toGlobal(blX, blY);
+
+  // Apply outward offset along each side's outward normal. For a right-leaning
+  // parallelogram we can push each vertex outward along the diagonal from
+  // the centroid; this is a crude approximation but matches how diamond
+  // handles `offset` without corner curves.
+  const expand = (
+    p: GlobalPoint,
+    centerX: number,
+    centerY: number,
+  ): GlobalPoint => {
+    if (offset === 0) {
+      return p;
+    }
+    const dx = p[0] - centerX;
+    const dy = p[1] - centerY;
+    const len = Math.hypot(dx, dy) || 1;
+    return pointFrom<GlobalPoint>(
+      p[0] + (dx / len) * offset,
+      p[1] + (dy / len) * offset,
+    );
+  };
+
+  const cx = element.x + element.width / 2;
+  const cy = element.y + element.height / 2;
+
+  const tl = expand(topLeft, cx, cy);
+  const tr = expand(topRight, cx, cy);
+  const br = expand(bottomRight, cx, cy);
+  const bl = expand(bottomLeft, cx, cy);
+
+  const sides = [
+    lineSegment<GlobalPoint>(tl, tr),
+    lineSegment<GlobalPoint>(tr, br),
+    lineSegment<GlobalPoint>(br, bl),
+    lineSegment<GlobalPoint>(bl, tl),
+  ];
+
+  const shape = [sides, []] as ElementShape;
 
   setElementShapesCacheEntry(element, shape, offset);
 

@@ -50,6 +50,7 @@ import {
 import {
   deconstructDiamondElement,
   deconstructLinearOrFreeDrawElement,
+  deconstructParallelogramElement,
   deconstructRectanguloidElement,
 } from "./utils";
 
@@ -70,6 +71,7 @@ import type {
   ExcalidrawEllipseElement,
   ExcalidrawFreeDrawElement,
   ExcalidrawLinearElement,
+  ExcalidrawParallelogramElement,
   ExcalidrawRectanguloidElement,
   NonDeleted,
   NonDeletedExcalidrawElement,
@@ -466,6 +468,14 @@ export const intersectElementWithLineSegment = (
         offset,
         onlyFirst,
       );
+    case "parallelogram":
+      return intersectParallelogramWithLineSegment(
+        element,
+        elementsMap,
+        line,
+        offset,
+        onlyFirst,
+      );
     case "ellipse":
       return intersectEllipseWithLineSegment(
         element,
@@ -692,6 +702,34 @@ const intersectDiamondWithLineSegment = (
 
   curveIntersections(
     corners,
+    rotatedIntersector,
+    intersections,
+    center,
+    element.angle,
+    onlyFirst,
+  );
+
+  return intersections;
+};
+
+const intersectParallelogramWithLineSegment = (
+  element: ExcalidrawParallelogramElement,
+  elementsMap: ElementsMap,
+  l: LineSegment<GlobalPoint>,
+  offset: number = 0,
+  onlyFirst = false,
+): GlobalPoint[] => {
+  const center = elementCenterPoint(element, elementsMap);
+
+  const rotatedA = pointRotateRads(l[0], center, -element.angle as Radians);
+  const rotatedB = pointRotateRads(l[1], center, -element.angle as Radians);
+  const rotatedIntersector = lineSegment(rotatedA, rotatedB);
+
+  const [sides] = deconstructParallelogramElement(element, offset);
+  const intersections: GlobalPoint[] = [];
+
+  lineIntersections(
+    sides,
     rotatedIntersector,
     intersections,
     center,

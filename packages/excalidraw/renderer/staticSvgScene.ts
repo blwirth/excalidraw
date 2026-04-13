@@ -147,6 +147,7 @@ const renderElementToSvg = (
     }
     case "rectangle":
     case "diamond":
+    case "parallelogram":
     case "ellipse": {
       const shape = ShapeCache.generateElementShape(element, renderConfig);
       const node = roughSVGDrawWithPrecision(

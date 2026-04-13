@@ -280,9 +280,10 @@ export class API {
     switch (type) {
       case "rectangle":
       case "diamond":
+      case "parallelogram":
       case "ellipse":
         element = newElement({
-          type: type as "rectangle" | "diamond" | "ellipse",
+          type: type as "rectangle" | "diamond" | "parallelogram" | "ellipse",
           ...base,
         });
         break;

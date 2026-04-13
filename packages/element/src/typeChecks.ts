@@ -251,6 +251,7 @@ export const isExcalidrawElement = (
   switch (type) {
     case "text":
     case "diamond":
+    case "parallelogram":
     case "rectangle":
     case "iframe":
     case "embeddable":
@@ -277,7 +278,8 @@ export const isFlowchartNodeElement = (
   return (
     element.type === "rectangle" ||
     element.type === "ellipse" ||
-    element.type === "diamond"
+    element.type === "diamond" ||
+    element.type === "parallelogram"
   );
 };
 
