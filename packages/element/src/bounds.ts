@@ -564,6 +564,19 @@ export const getParallelogramPoints = (element: ExcalidrawElement) => {
   ];
 };
 
+// Cylinder/database: top + bottom are ellipses, sides are vertical lines.
+// `cap` is the visible half-height of the top/bottom ellipse (ry).
+export const DATABASE_CAP_RATIO = 0.18;
+export const DATABASE_CAP_MAX = 24;
+
+export const getDatabaseCapHeight = (element: ExcalidrawElement) => {
+  const ratioCap = Math.min(
+    element.height * DATABASE_CAP_RATIO,
+    element.width * 0.35,
+  );
+  return Math.max(2, Math.min(ratioCap, DATABASE_CAP_MAX));
+};
+
 // reference: https://eliot-jones.com/2019/12/cubic-bezier-curve-bounding-boxes
 const getBezierValueForT = (
   t: number,

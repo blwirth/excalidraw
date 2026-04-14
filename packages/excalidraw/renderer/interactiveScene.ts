@@ -21,6 +21,7 @@ import {
 } from "@excalidraw/common";
 
 import {
+  deconstructDatabaseElement,
   deconstructDiamondElement,
   deconstructParallelogramElement,
   deconstructRectanguloidElement,
@@ -370,6 +371,27 @@ const renderBindingHighlightForBindableElement_simple = (
         case "parallelogram":
           {
             const [segments] = deconstructParallelogramElement(
+              suggestedBinding.element,
+            );
+
+            segments.forEach((segment) => {
+              context.beginPath();
+              context.moveTo(
+                segment[0][0] - suggestedBinding.element.x,
+                segment[0][1] - suggestedBinding.element.y,
+              );
+              context.lineTo(
+                segment[1][0] - suggestedBinding.element.x,
+                segment[1][1] - suggestedBinding.element.y,
+              );
+              context.stroke();
+            });
+          }
+
+          break;
+        case "database":
+          {
+            const [segments] = deconstructDatabaseElement(
               suggestedBinding.element,
             );
 
@@ -751,6 +773,25 @@ const renderBindingHighlightForBindableElement_complex = (
         case "parallelogram":
           {
             const [segments] = deconstructParallelogramElement(element, offset);
+
+            segments.forEach((segment) => {
+              context.beginPath();
+              context.moveTo(
+                segment[0][0] - element.x + offset,
+                segment[0][1] - element.y + offset,
+              );
+              context.lineTo(
+                segment[1][0] - element.x + offset,
+                segment[1][1] - element.y + offset,
+              );
+              context.stroke();
+            });
+          }
+
+          break;
+        case "database":
+          {
+            const [segments] = deconstructDatabaseElement(element, offset);
 
             segments.forEach((segment) => {
               context.beginPath();

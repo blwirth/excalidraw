@@ -184,6 +184,7 @@ export const isBindableElement = (
     (element.type === "rectangle" ||
       element.type === "diamond" ||
       element.type === "parallelogram" ||
+      element.type === "database" ||
       element.type === "ellipse" ||
       element.type === "image" ||
       element.type === "iframe" ||
@@ -238,6 +239,7 @@ export const isTextBindableContainer = (
     (element.type === "rectangle" ||
       element.type === "diamond" ||
       element.type === "parallelogram" ||
+      element.type === "database" ||
       element.type === "ellipse" ||
       isArrowElement(element))
   );
@@ -254,6 +256,7 @@ export const isExcalidrawElement = (
     case "text":
     case "diamond":
     case "parallelogram":
+    case "database":
     case "rectangle":
     case "iframe":
     case "embeddable":
@@ -281,7 +284,8 @@ export const isFlowchartNodeElement = (
     element.type === "rectangle" ||
     element.type === "ellipse" ||
     element.type === "diamond" ||
-    element.type === "parallelogram"
+    element.type === "parallelogram" ||
+    element.type === "database"
   );
 };
 

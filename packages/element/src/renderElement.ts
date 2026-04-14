@@ -403,6 +403,17 @@ const drawElementOnCanvas = (
       rc.draw(ShapeCache.generateElementShape(element, renderConfig));
       break;
     }
+    case "database": {
+      context.lineJoin = "round";
+      context.lineCap = "round";
+
+      ShapeCache.generateElementShape(element, renderConfig).forEach(
+        (shape) => {
+          rc.draw(shape);
+        },
+      );
+      break;
+    }
     case "arrow":
     case "line": {
       context.lineJoin = "round";
@@ -882,6 +893,7 @@ export const renderElement = (
     case "rectangle":
     case "diamond":
     case "parallelogram":
+    case "database":
     case "ellipse":
     case "line":
     case "arrow":

@@ -59,6 +59,7 @@ import { canChangeRoundness } from "./comparisons";
 import {
   elementCenterPoint,
   getArrowheadPoints,
+  getDatabaseCapHeight,
   getDiamondPoints,
   getElementAbsoluteCoords,
   getParallelogramPoints,
@@ -232,6 +233,7 @@ export const generateRoughOptions = (
     case "embeddable":
     case "diamond":
     case "parallelogram":
+    case "database":
     case "ellipse": {
       options.fillStyle = element.fillStyle;
       options.fill = isTransparent(element.backgroundColor)
@@ -834,6 +836,31 @@ const _generateElementShape = (
       );
       return shape;
     }
+    case "database": {
+      const w = element.width;
+      const h = element.height;
+      const cap = getDatabaseCapHeight(element);
+      const rx = w / 2;
+      const options = generateRoughOptions(element, false, isDarkMode);
+      // Closed silhouette: top half of top ellipse across, down the right,
+      // front (lower) half of bottom ellipse, up the left.
+      const bodyPath =
+        `M 0 ${cap} ` +
+        `A ${rx} ${cap} 0 0 1 ${w} ${cap} ` +
+        `L ${w} ${h - cap} ` +
+        `A ${rx} ${cap} 0 0 1 0 ${h - cap} ` +
+        `Z`;
+      // Front (lower) half of the top ellipse — the visible rim line.
+      const rimPath = `M 0 ${cap} A ${rx} ${cap} 0 0 0 ${w} ${cap}`;
+      const body = generator.path(bodyPath, options);
+      const rim = generator.path(rimPath, {
+        ...options,
+        fill: undefined,
+        fillStyle: "solid",
+      });
+      const shape: ElementShapes[typeof element.type] = [body, rim];
+      return shape;
+    }
     case "diamond": {
       let shape: ElementShapes[typeof element.type];
 
@@ -1097,6 +1124,7 @@ export const getElementShape = <Point extends GlobalPoint | LocalPoint>(
     case "rectangle":
     case "diamond":
     case "parallelogram":
+    case "database":
     case "frame":
     case "magicframe":
     case "embeddable":

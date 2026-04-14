@@ -48,6 +48,7 @@ import {
   isTextElement,
 } from "./typeChecks";
 import {
+  deconstructDatabaseElement,
   deconstructDiamondElement,
   deconstructLinearOrFreeDrawElement,
   deconstructParallelogramElement,
@@ -66,6 +67,7 @@ import type {
   ElementsMap,
   ExcalidrawArrowElement,
   ExcalidrawBindableElement,
+  ExcalidrawDatabaseElement,
   ExcalidrawDiamondElement,
   ExcalidrawElement,
   ExcalidrawEllipseElement,
@@ -476,6 +478,14 @@ export const intersectElementWithLineSegment = (
         offset,
         onlyFirst,
       );
+    case "database":
+      return intersectDatabaseWithLineSegment(
+        element,
+        elementsMap,
+        line,
+        offset,
+        onlyFirst,
+      );
     case "ellipse":
       return intersectEllipseWithLineSegment(
         element,
@@ -726,6 +736,34 @@ const intersectParallelogramWithLineSegment = (
   const rotatedIntersector = lineSegment(rotatedA, rotatedB);
 
   const [sides] = deconstructParallelogramElement(element, offset);
+  const intersections: GlobalPoint[] = [];
+
+  lineIntersections(
+    sides,
+    rotatedIntersector,
+    intersections,
+    center,
+    element.angle,
+    onlyFirst,
+  );
+
+  return intersections;
+};
+
+const intersectDatabaseWithLineSegment = (
+  element: ExcalidrawDatabaseElement,
+  elementsMap: ElementsMap,
+  l: LineSegment<GlobalPoint>,
+  offset: number = 0,
+  onlyFirst = false,
+): GlobalPoint[] => {
+  const center = elementCenterPoint(element, elementsMap);
+
+  const rotatedA = pointRotateRads(l[0], center, -element.angle as Radians);
+  const rotatedB = pointRotateRads(l[1], center, -element.angle as Radians);
+  const rotatedIntersector = lineSegment(rotatedA, rotatedB);
+
+  const [sides] = deconstructDatabaseElement(element, offset);
   const intersections: GlobalPoint[] = [];
 
   lineIntersections(

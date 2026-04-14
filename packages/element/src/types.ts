@@ -97,6 +97,10 @@ export type ExcalidrawParallelogramElement = _ExcalidrawElementBase & {
   type: "parallelogram";
 };
 
+export type ExcalidrawDatabaseElement = _ExcalidrawElementBase & {
+  type: "database";
+};
+
 export type ExcalidrawEllipseElement = _ExcalidrawElementBase & {
   type: "ellipse";
 };
@@ -186,12 +190,14 @@ export type ExcalidrawGenericElement =
   | ExcalidrawRectangleElement
   | ExcalidrawDiamondElement
   | ExcalidrawParallelogramElement
+  | ExcalidrawDatabaseElement
   | ExcalidrawEllipseElement;
 
 export type ExcalidrawFlowchartNodeElement =
   | ExcalidrawRectangleElement
   | ExcalidrawDiamondElement
   | ExcalidrawParallelogramElement
+  | ExcalidrawDatabaseElement
   | ExcalidrawEllipseElement;
 
 export type ExcalidrawRectanguloidElement =
@@ -266,6 +272,7 @@ export type ExcalidrawBindableElement =
   | ExcalidrawRectangleElement
   | ExcalidrawDiamondElement
   | ExcalidrawParallelogramElement
+  | ExcalidrawDatabaseElement
   | ExcalidrawEllipseElement
   | ExcalidrawTextElement
   | ExcalidrawImageElement
@@ -278,6 +285,7 @@ export type ExcalidrawTextContainer =
   | ExcalidrawRectangleElement
   | ExcalidrawDiamondElement
   | ExcalidrawParallelogramElement
+  | ExcalidrawDatabaseElement
   | ExcalidrawEllipseElement
   | ExcalidrawArrowElement;
 
@@ -455,6 +463,7 @@ export type ConvertibleGenericTypes =
   | "rectangle"
   | "diamond"
   | "parallelogram"
+  | "database"
   | "ellipse";
 export type ConvertibleLinearTypes = ExcalidrawLinearElementSubType;
 export type ConvertibleTypes = ConvertibleGenericTypes | ConvertibleLinearTypes;

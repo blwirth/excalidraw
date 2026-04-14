@@ -530,7 +530,8 @@ export const convertToExcalidrawElements = (
       case "rectangle":
       case "ellipse":
       case "diamond":
-      case "parallelogram": {
+      case "parallelogram":
+      case "database": {
         const width =
           element?.label?.text && element.width === undefined
             ? 0

@@ -357,6 +357,17 @@ export const ParallelogramIcon = createIcon(
   tablerIconProps,
 );
 
+// tabler-icons: database (simplified cylinder)
+export const DatabaseIcon = createIcon(
+  <g strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <ellipse cx="12" cy="6" rx="8" ry="3" />
+    <path d="M4 6 L4 18 A8 3 0 0 0 20 18 L20 6" />
+  </g>,
+
+  tablerIconProps,
+);
+
 // tabler-icons: circle
 export const EllipseIcon = createIcon(
   <g strokeWidth="1.5">

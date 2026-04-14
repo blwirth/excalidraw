@@ -146,6 +146,7 @@ export type ToolType =
   | "rectangle"
   | "diamond"
   | "parallelogram"
+  | "database"
   | "ellipse"
   | "arrow"
   | "line"
