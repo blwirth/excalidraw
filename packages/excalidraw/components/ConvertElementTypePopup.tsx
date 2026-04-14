@@ -62,6 +62,7 @@ import type {
   ConvertibleGenericTypes,
   ConvertibleLinearTypes,
   ConvertibleTypes,
+  ExcalidrawDatabaseElement,
   ExcalidrawDiamondElement,
   ExcalidrawElement,
   ExcalidrawEllipseElement,
@@ -82,6 +83,7 @@ import { atom } from "../editor-jotai";
 import "./ConvertElementTypePopup.scss";
 import { ToolButton } from "./ToolButton";
 import {
+  DatabaseIcon,
   DiamondIcon,
   elbowArrowIcon,
   EllipseIcon,
@@ -103,6 +105,7 @@ type ExcalidrawConvertibleElement =
   | ExcalidrawRectangleElement
   | ExcalidrawDiamondElement
   | ExcalidrawParallelogramElement
+  | ExcalidrawDatabaseElement
   | ExcalidrawEllipseElement
   | ExcalidrawLinearElement;
 
@@ -111,6 +114,7 @@ const GENERIC_TYPES = [
   "rectangle",
   "diamond",
   "parallelogram",
+  "database",
   "ellipse",
 ] as const;
 // indicates order of switching
@@ -311,6 +315,7 @@ const Panel = ({
           ["rectangle", RectangleIcon],
           ["diamond", DiamondIcon],
           ["parallelogram", ParallelogramIcon],
+          ["database", DatabaseIcon],
           ["ellipse", EllipseIcon],
         ]
       : [];

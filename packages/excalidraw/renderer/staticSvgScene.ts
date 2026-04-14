@@ -178,6 +178,40 @@ const renderElementToSvg = (
       addToRoot(g || node, element);
       break;
     }
+    case "database": {
+      const shapes = ShapeCache.generateElementShape(element, renderConfig);
+      const group = svgRoot.ownerDocument!.createElementNS(SVG_NS, "g");
+      for (const shape of shapes) {
+        const node = roughSVGDrawWithPrecision(
+          rsvg,
+          shape,
+          MAX_DECIMALS_FOR_SVG_EXPORT,
+        );
+        if (opacity !== 1) {
+          node.setAttribute("stroke-opacity", `${opacity}`);
+          node.setAttribute("fill-opacity", `${opacity}`);
+        }
+        node.setAttribute("stroke-linecap", "round");
+        group.appendChild(node);
+      }
+      group.setAttribute(
+        "transform",
+        `translate(${offsetX || 0} ${
+          offsetY || 0
+        }) rotate(${degree} ${cx} ${cy})`,
+      );
+
+      const g = maybeWrapNodesInFrameClipPath(
+        element,
+        root,
+        [group],
+        renderConfig.frameRendering,
+        elementsMap,
+      );
+
+      addToRoot(g || group, element);
+      break;
+    }
     case "iframe":
     case "embeddable": {
       // render placeholder rectangle

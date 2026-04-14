@@ -9,6 +9,7 @@ import { ellipse, ellipseDistanceFromPoint } from "@excalidraw/math/ellipse";
 import type { GlobalPoint, Radians } from "@excalidraw/math";
 
 import {
+  deconstructDatabaseElement,
   deconstructDiamondElement,
   deconstructLinearOrFreeDrawElement,
   deconstructParallelogramElement,
@@ -19,6 +20,7 @@ import { elementCenterPoint } from "./bounds";
 
 import type {
   ElementsMap,
+  ExcalidrawDatabaseElement,
   ExcalidrawDiamondElement,
   ExcalidrawElement,
   ExcalidrawEllipseElement,
@@ -47,6 +49,8 @@ export const distanceToElement = (
       return distanceToDiamondElement(element, elementsMap, p);
     case "parallelogram":
       return distanceToParallelogramElement(element, elementsMap, p);
+    case "database":
+      return distanceToDatabaseElement(element, elementsMap, p);
     case "ellipse":
       return distanceToEllipseElement(element, elementsMap, p);
     case "line":
@@ -122,6 +126,17 @@ const distanceToParallelogramElement = (
   const center = elementCenterPoint(element, elementsMap);
   const rotatedPoint = pointRotateRads(p, center, -element.angle as Radians);
   const [sides] = deconstructParallelogramElement(element);
+  return Math.min(...sides.map((s) => distanceToLineSegment(rotatedPoint, s)));
+};
+
+const distanceToDatabaseElement = (
+  element: ExcalidrawDatabaseElement,
+  elementsMap: ElementsMap,
+  p: GlobalPoint,
+): number => {
+  const center = elementCenterPoint(element, elementsMap);
+  const rotatedPoint = pointRotateRads(p, center, -element.angle as Radians);
+  const [sides] = deconstructDatabaseElement(element);
   return Math.min(...sides.map((s) => distanceToLineSegment(rotatedPoint, s)));
 };
 

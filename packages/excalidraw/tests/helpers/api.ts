@@ -281,9 +281,15 @@ export class API {
       case "rectangle":
       case "diamond":
       case "parallelogram":
+      case "database":
       case "ellipse":
         element = newElement({
-          type: type as "rectangle" | "diamond" | "parallelogram" | "ellipse",
+          type: type as
+            | "rectangle"
+            | "diamond"
+            | "parallelogram"
+            | "database"
+            | "ellipse",
           ...base,
         });
         break;

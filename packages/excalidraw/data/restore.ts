@@ -106,6 +106,7 @@ export const AllowedExcalidrawActiveTools: Record<
   rectangle: true,
   diamond: true,
   parallelogram: true,
+  database: true,
   ellipse: true,
   line: true,
   image: true,
@@ -527,6 +528,7 @@ export const restoreElement = (
     case "rectangle":
     case "diamond":
     case "parallelogram":
+    case "database":
     case "iframe":
     case "embeddable":
       return restoreElementWithProperties(element, {});

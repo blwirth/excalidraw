@@ -36,6 +36,7 @@ import type {
 
 import {
   elementCenterPoint,
+  getDatabaseCapHeight,
   getDiamondPoints,
   getParallelogramPoints,
 } from "./bounds";
@@ -60,6 +61,7 @@ import type {
   ExcalidrawElement,
   ExcalidrawFreeDrawElement,
   ExcalidrawLinearElement,
+  ExcalidrawDatabaseElement,
   ExcalidrawParallelogramElement,
   ExcalidrawRectanguloidElement,
 } from "./types";
@@ -531,6 +533,75 @@ export function deconstructParallelogramElement(
     lineSegment<GlobalPoint>(br, bl),
     lineSegment<GlobalPoint>(bl, tl),
   ];
+
+  const shape = [sides, []] as ElementShape;
+
+  setElementShapesCacheEntry(element, shape, offset);
+
+  return shape;
+}
+
+/**
+ * Get the **unrotated** building components of a database/cylinder element
+ * as a polyline approximation: vertical sides and the top/bottom ellipse
+ * caps approximated as short line segments.
+ */
+export function deconstructDatabaseElement(
+  element: ExcalidrawDatabaseElement,
+  offset: number = 0,
+): [LineSegment<GlobalPoint>[], Curve<GlobalPoint>[]] {
+  const cachedShape = getElementShapesCacheEntry(element, offset);
+
+  if (cachedShape) {
+    return cachedShape;
+  }
+
+  const w = element.width;
+  const h = element.height;
+  const cap = getDatabaseCapHeight(element);
+  const rx = w / 2 + offset;
+  const ry = cap + offset;
+  const cx = element.x + w / 2;
+  const topCy = element.y + cap;
+  const bottomCy = element.y + h - cap;
+  const SEGMENTS = 24;
+
+  // Top ellipse (full loop).
+  const topArc: GlobalPoint[] = [];
+  for (let i = 0; i <= SEGMENTS; i++) {
+    const t = (i / SEGMENTS) * Math.PI * 2;
+    topArc.push(
+      pointFrom<GlobalPoint>(cx + rx * Math.cos(t), topCy + ry * Math.sin(t)),
+    );
+  }
+
+  // Bottom ellipse, only the lower (visible) half from right side around to
+  // left side. Together with the vertical sides this closes the silhouette.
+  const bottomArc: GlobalPoint[] = [];
+  for (let i = 0; i <= SEGMENTS; i++) {
+    const t = (i / SEGMENTS) * Math.PI; // 0..π → right → bottom → left
+    bottomArc.push(
+      pointFrom<GlobalPoint>(
+        cx + rx * Math.cos(t),
+        bottomCy + ry * Math.sin(t),
+      ),
+    );
+  }
+
+  const leftTop = pointFrom<GlobalPoint>(element.x - offset, topCy);
+  const leftBottom = pointFrom<GlobalPoint>(element.x - offset, bottomCy);
+  const rightTop = pointFrom<GlobalPoint>(element.x + w + offset, topCy);
+  const rightBottom = pointFrom<GlobalPoint>(element.x + w + offset, bottomCy);
+
+  const sides: LineSegment<GlobalPoint>[] = [];
+  for (let i = 0; i < topArc.length - 1; i++) {
+    sides.push(lineSegment<GlobalPoint>(topArc[i], topArc[i + 1]));
+  }
+  sides.push(lineSegment<GlobalPoint>(rightTop, rightBottom));
+  for (let i = 0; i < bottomArc.length - 1; i++) {
+    sides.push(lineSegment<GlobalPoint>(bottomArc[i], bottomArc[i + 1]));
+  }
+  sides.push(lineSegment<GlobalPoint>(leftBottom, leftTop));
 
   const shape = [sides, []] as ElementShape;
 
