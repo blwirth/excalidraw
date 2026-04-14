@@ -104,6 +104,7 @@ import {
   deriveStylesPanelMode,
   isIOS,
   isBrave,
+  isDarwin,
   isSafari,
   type EditorInterface,
   type StylesPanelMode,
@@ -7688,6 +7689,18 @@ class App extends React.Component<AppProps, AppState> {
       event.button !== POINTER_BUTTON.MAIN &&
       event.button !== POINTER_BUTTON.TOUCH &&
       event.button !== POINTER_BUTTON.ERASER
+    ) {
+      return;
+    }
+
+    // macOS Safari reports Ctrl+click as button=0 with ctrlKey=true rather
+    // than button=2, so it slips past the guard above and clears the
+    // selection before handleCanvasContextMenu runs. Let contextmenu handle it.
+    if (
+      isDarwin &&
+      event.ctrlKey &&
+      event.button === POINTER_BUTTON.MAIN &&
+      event.pointerType !== "touch"
     ) {
       return;
     }
