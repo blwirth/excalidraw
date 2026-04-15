@@ -154,13 +154,31 @@ export const exportCanvas = async (
         },
       );
     } else if (type === "clipboard-svg") {
-      const svg = await svgPromise.then((svg) => svg.outerHTML);
+      // Safari revokes clipboard-write permission once we await past the
+      // initial user gesture. Construct the ClipboardItem synchronously
+      // with a Promise<Blob> so the gesture context is preserved, mirroring
+      // copyBlobToClipboardAsPng.
+      // https://bugs.webkit.org/show_bug.cgi?id=222262
+      const svgBlobPromise = svgPromise.then(
+        (svg) => new Blob([svg.outerHTML], { type: MIME_TYPES.text }),
+      );
       try {
-        await copyTextToSystemClipboard(svg);
-      } catch (e) {
-        throw new Error(t("errors.copyToSystemClipboardFailed"));
+        await navigator.clipboard.write([
+          new ClipboardItem({ [MIME_TYPES.text]: svgBlobPromise }),
+        ]);
+        return;
+      } catch (error: any) {
+        // Fallback for browsers that don't accept a Promise inside
+        // ClipboardItem (or lack ClipboardItem entirely). Activation may
+        // already be lost here, but we're no worse off than before.
+        try {
+          const svg = await svgPromise;
+          await copyTextToSystemClipboard(svg.outerHTML);
+          return;
+        } catch {
+          throw new Error(t("errors.copyToSystemClipboardFailed"));
+        }
       }
-      return;
     }
   }
 
