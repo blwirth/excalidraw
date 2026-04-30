@@ -459,6 +459,8 @@ import { findShapeByKey } from "./shapes";
 
 import UnlockPopup from "./UnlockPopup";
 
+import { computeStepOpacities } from "../presentation/computeStepOpacities";
+
 import type { ExcalidrawLibraryIds } from "../data/types";
 
 import type {
@@ -2086,6 +2088,11 @@ class App extends React.Component<AppProps, AppState> {
 
     const allElementsMap = this.scene.getNonDeletedElementsMap();
 
+    const presentationOpacityOverrides = computeStepOpacities(
+      this.scene.getNonDeletedElements(),
+      this.state.presentation,
+    );
+
     const shouldBlockPointerEvents =
       // default back to `--ui-pointerEvents` flow if setPointerCapture
       // not supported
@@ -2319,6 +2326,8 @@ class App extends React.Component<AppProps, AppState> {
                               pendingFlowchartNodes:
                                 this.flowChartCreator.pendingNodes,
                               theme: this.state.theme,
+                              presentationOpacityOverrides:
+                                presentationOpacityOverrides ?? undefined,
                             }}
                           />
                           {this.state.newElement && (
@@ -2340,6 +2349,8 @@ class App extends React.Component<AppProps, AppState> {
                                   this.elementsPendingErasure,
                                 pendingFlowchartNodes: null,
                                 theme: this.state.theme,
+                                presentationOpacityOverrides:
+                                  presentationOpacityOverrides ?? undefined,
                               }}
                             />
                           )}

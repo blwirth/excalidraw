@@ -803,13 +803,16 @@ export const renderElement = (
     !appState.selectedElementIds[element.id] &&
     !appState.hoveredElementIds[element.id];
 
-  context.globalAlpha = getRenderOpacity(
-    element,
-    getContainingFrame(element, elementsMap),
-    renderConfig.elementsPendingErasure,
-    renderConfig.pendingFlowchartNodes,
-    reduceAlphaForSelection ? DEFAULT_REDUCED_GLOBAL_ALPHA : 1,
-  );
+  const presentationOverride =
+    renderConfig.presentationOpacityOverrides?.get(element.id);
+  context.globalAlpha =
+    getRenderOpacity(
+      element,
+      getContainingFrame(element, elementsMap),
+      renderConfig.elementsPendingErasure,
+      renderConfig.pendingFlowchartNodes,
+      reduceAlphaForSelection ? DEFAULT_REDUCED_GLOBAL_ALPHA : 1,
+    ) * (presentationOverride ?? 1);
 
   switch (element.type) {
     case "magicframe":

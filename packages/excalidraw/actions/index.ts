@@ -92,3 +92,23 @@ export { actionToggleLinearEditor } from "./actionLinearEditor";
 export { actionToggleSearchMenu } from "./actionToggleSearchMenu";
 
 export { actionToggleCropEditor } from "./actionCropEditor";
+
+export {
+  actionAddPresentationStep,
+  actionRemovePresentationStep,
+  actionRenamePresentationStep,
+  actionMovePresentationStep,
+  actionAssignStepToGroup,
+  actionSetActivePresentationStep,
+  actionSetPresentationOpacities,
+  actionAddSelectionToStep,
+  actionAssignSelectionToStep,
+  actionRemoveSelectionFromStep,
+  actionToggleSelectionAlwaysFull,
+  actionClearSelectionStepTags,
+  actionAddPresentationGroup,
+  actionRemovePresentationGroup,
+  actionRenamePresentationGroup,
+  actionSetActivePresentationGroup,
+  actionSetGroupOpacityMode,
+} from "./actionPresentation";

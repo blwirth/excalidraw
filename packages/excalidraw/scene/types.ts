@@ -37,6 +37,11 @@ export type StaticCanvasRenderConfig = {
   elementsPendingErasure: ElementsPendingErasure;
   pendingFlowchartNodes: PendingExcalidrawElements | null;
   theme: AppState["theme"];
+  /**
+   * Per-element opacity multiplier (0..1) for presentation step preview.
+   * `undefined` skips the override; missing element ids render at 1.
+   */
+  presentationOpacityOverrides?: Map<ExcalidrawElement["id"], number>;
 };
 
 export type SVGRenderConfig = {
@@ -56,6 +61,11 @@ export type SVGRenderConfig = {
    */
   reuseImages: boolean;
   theme: AppState["theme"];
+  /**
+   * Per-element opacity multiplier (0..1) for presentation step preview.
+   * `undefined` skips the override; missing element ids render at 1.
+   */
+  presentationOpacityOverrides?: Map<ExcalidrawElement["id"], number>;
 };
 
 export type InteractiveCanvasRenderConfig = {

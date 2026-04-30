@@ -83,6 +83,12 @@ exports[`exportToSvg > with default arguments 1`] = `
     "initialized": false,
     "type": "selection",
   },
+  "presentation": {
+    "activeStepId": null,
+    "futureOpacity": 0.2,
+    "pastOpacity": 0.5,
+    "steps": [],
+  },
   "previousSelectedElementIds": {},
   "resizingElement": null,
   "scrollX": 0,
