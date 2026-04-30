@@ -134,10 +134,16 @@ const renderElementToSvg = (
     root.appendChild(node);
   };
 
-  const opacity =
+  const baseOpacity =
     ((getContainingFrame(element, elementsMap)?.opacity ?? 100) *
       element.opacity) /
     10000;
+  const presentationOverride =
+    renderConfig.presentationOpacityOverrides?.get(element.id);
+  const opacity =
+    presentationOverride != null
+      ? baseOpacity * presentationOverride
+      : baseOpacity;
 
   switch (element.type) {
     case "selection": {

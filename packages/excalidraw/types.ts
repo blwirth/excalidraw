@@ -475,6 +475,41 @@ export interface AppState {
   // and also remove groupId from this map
   lockedMultiSelections: { [groupId: string]: true };
   bindMode: BindMode;
+
+  /**
+   * Presentation step authoring state. Each element opts in to a step via
+   * `customData.presentation.revealAtStepId` (or `alwaysFull: true` for items
+   * pinned to full opacity on every step). When `activeStepId` is set, the
+   * canvas dims past/future elements according to `pastOpacity`/`futureOpacity`.
+   */
+  presentation: {
+    steps: readonly {
+      id: string;
+      name: string;
+      /** Optional: which group/diagram this step belongs to. null = unassigned. */
+      groupId?: string | null;
+    }[];
+    /** Optional list of step groups (diagrams). Absent on legacy data. */
+    groups?: readonly {
+      id: string;
+      name: string;
+      /** Optional per-diagram opacity overrides. Falls back to global values. */
+      pastOpacity?: number;
+      futureOpacity?: number;
+      /**
+       * How this diagram fades non-current elements:
+       * - `step-wise` (default, omitted): past = pastOpacity, future = futureOpacity
+       * - `highlight`: anything not in the active step is faded uniformly to futureOpacity
+       *   (treats every step as a standalone "callout" rather than a progressive reveal)
+       */
+      opacityMode?: "step-wise" | "highlight";
+    }[];
+    /** Optional filter: only show steps in this group in the panel. null = all. */
+    activeGroupId?: string | null;
+    activeStepId: string | null;
+    pastOpacity: number;
+    futureOpacity: number;
+  };
 }
 
 export type SearchMatch = {

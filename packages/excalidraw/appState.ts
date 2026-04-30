@@ -11,6 +11,8 @@ import {
   THEME,
   DEFAULT_GRID_STEP,
   isTestEnv,
+  PRESENTATION_DEFAULT_PAST_OPACITY,
+  PRESENTATION_DEFAULT_FUTURE_OPACITY,
 } from "@excalidraw/common";
 
 import type { AppState, NormalizedZoomValue } from "./types";
@@ -129,6 +131,14 @@ export const getDefaultAppState = (): Omit<
     activeLockedId: null,
     bindMode: "orbit",
     boxSelectionMode: "contain",
+    presentation: {
+      steps: [],
+      groups: [],
+      activeGroupId: null,
+      activeStepId: null,
+      pastOpacity: PRESENTATION_DEFAULT_PAST_OPACITY,
+      futureOpacity: PRESENTATION_DEFAULT_FUTURE_OPACITY,
+    },
   };
 };
 
@@ -256,6 +266,7 @@ const APP_STATE_STORAGE_CONF = (<
   lockedMultiSelections: { browser: true, export: true, server: true },
   activeLockedId: { browser: false, export: false, server: false },
   bindMode: { browser: true, export: false, server: false },
+  presentation: { browser: true, export: true, server: false },
 });
 
 const _clearAppStateForStorage = <

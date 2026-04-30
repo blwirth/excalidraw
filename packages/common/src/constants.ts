@@ -431,6 +431,10 @@ export const DEFAULT_ELEMENT_PROPS: {
 
 export const LIBRARY_SIDEBAR_TAB = "library";
 export const CANVAS_SEARCH_TAB = "search";
+export const SLIDES_SIDEBAR_TAB = "slides";
+
+export const PRESENTATION_DEFAULT_PAST_OPACITY = 0.5;
+export const PRESENTATION_DEFAULT_FUTURE_OPACITY = 0.2;
 
 export const DEFAULT_SIDEBAR = {
   name: "default",

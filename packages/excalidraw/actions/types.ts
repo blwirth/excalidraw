@@ -145,7 +145,23 @@ export type ActionName =
   | "wrapSelectionInFrame"
   | "toggleLassoTool"
   | "toggleShapeSwitch"
-  | "togglePolygon";
+  | "togglePolygon"
+  | "addPresentationStep"
+  | "removePresentationStep"
+  | "renamePresentationStep"
+  | "movePresentationStep"
+  | "assignPresentationStepToGroup"
+  | "setActivePresentationStep"
+  | "setPresentationOpacities"
+  | "assignSelectionToPresentationStep"
+  | "removeSelectionFromPresentationStep"
+  | "toggleSelectionAlwaysFull"
+  | "clearSelectionStepTags"
+  | "addPresentationGroup"
+  | "removePresentationGroup"
+  | "renamePresentationGroup"
+  | "setActivePresentationGroup"
+  | "setPresentationGroupOpacityMode";
 
 export type PanelComponentProps = {
   elements: readonly ExcalidrawElement[];
@@ -205,7 +221,8 @@ export interface Action<TData = any> {
           | "collab"
           | "hyperlink"
           | "search_menu"
-          | "shape_switch";
+          | "shape_switch"
+          | "presentation";
         action?: string;
         predicate?: (
           appState: Readonly<AppState>,
