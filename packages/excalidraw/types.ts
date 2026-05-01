@@ -357,6 +357,7 @@ export interface AppState {
   exportScale: number;
   currentItemStrokeColor: string;
   currentItemBackgroundColor: string;
+  currentItemSecondaryBackgroundColor: string;
   currentItemFillStyle: ExcalidrawElement["fillStyle"];
   currentItemStrokeWidth: number;
   currentItemStrokeStyle: ExcalidrawElement["strokeStyle"];
@@ -383,6 +384,7 @@ export interface AppState {
   openPopup:
     | "canvasBackground"
     | "elementBackground"
+    | "elementSecondaryBackground"
     | "elementStroke"
     | "fontFamily"
     | "compactTextProperties"

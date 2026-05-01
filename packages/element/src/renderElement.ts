@@ -67,6 +67,7 @@ import { getContainingFrame } from "./frame";
 import { getCornerRadius } from "./utils";
 
 import { ShapeCache } from "./shape";
+import { drawStripeFill, hasStripeFill } from "./stripeFill";
 
 import type {
   ExcalidrawElement,
@@ -390,6 +391,7 @@ const drawElementOnCanvas = (
   context: CanvasRenderingContext2D,
   renderConfig: StaticCanvasRenderConfig,
 ) => {
+  const isDarkMode = renderConfig.theme === THEME.DARK;
   switch (element.type) {
     case "rectangle":
     case "iframe":
@@ -400,6 +402,7 @@ const drawElementOnCanvas = (
       context.lineJoin = "round";
       context.lineCap = "round";
 
+      drawStripeFill(context, element, isDarkMode);
       rc.draw(ShapeCache.generateElementShape(element, renderConfig));
       break;
     }
@@ -407,6 +410,7 @@ const drawElementOnCanvas = (
       context.lineJoin = "round";
       context.lineCap = "round";
 
+      drawStripeFill(context, element, isDarkMode);
       ShapeCache.generateElementShape(element, renderConfig).forEach(
         (shape) => {
           rc.draw(shape);
@@ -419,6 +423,9 @@ const drawElementOnCanvas = (
       context.lineJoin = "round";
       context.lineCap = "round";
 
+      if (hasStripeFill(element)) {
+        drawStripeFill(context, element, isDarkMode);
+      }
       ShapeCache.generateElementShape(element, renderConfig).forEach(
         (shape) => {
           rc.draw(shape);

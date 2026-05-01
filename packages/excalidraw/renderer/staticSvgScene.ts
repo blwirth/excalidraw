@@ -34,6 +34,8 @@ import { getCornerRadius, isPathALoop } from "@excalidraw/element";
 
 import { ShapeCache } from "@excalidraw/element";
 
+import { hasStripeFill, renderSvgStripeFill } from "@excalidraw/element";
+
 import { getElementAbsoluteCoords } from "@excalidraw/element";
 
 import type {
@@ -61,6 +63,26 @@ const roughSVGDrawWithPrecision = (
     options: { ...drawable.options, fixedDecimalPlaceDigits: precision },
   };
   return rsvg.draw(pshape);
+};
+
+const appendStripeFill = (
+  element: NonDeletedExcalidrawElement,
+  svgRoot: SVGElement,
+  isDarkMode: boolean,
+): SVGElement | null => {
+  const result = renderSvgStripeFill(element, svgRoot, isDarkMode);
+  if (!result) {
+    return null;
+  }
+  const defs =
+    svgRoot.querySelector("defs") ?? svgRoot.ownerDocument!.createElementNS(SVG_NS, "defs");
+  if (!defs.parentNode) {
+    svgRoot.insertBefore(defs, svgRoot.firstChild);
+  }
+  for (const node of result.defsNodes) {
+    defs.appendChild(node);
+  }
+  return result.fillNode;
 };
 
 const maybeWrapNodesInFrameClipPath = (
@@ -160,27 +182,63 @@ const renderElementToSvg = (
         node.setAttribute("fill-opacity", `${opacity}`);
       }
       node.setAttribute("stroke-linecap", "round");
-      node.setAttribute(
-        "transform",
-        `translate(${offsetX || 0} ${
-          offsetY || 0
-        }) rotate(${degree} ${cx} ${cy})`,
-      );
+
+      const transform = `translate(${offsetX || 0} ${
+        offsetY || 0
+      }) rotate(${degree} ${cx} ${cy})`;
+
+      let renderNode: SVGElement;
+      if (hasStripeFill(element)) {
+        const stripeNode = appendStripeFill(
+          element,
+          svgRoot,
+          renderConfig.theme === THEME.DARK,
+        );
+        if (stripeNode) {
+          if (opacity !== 1) {
+            stripeNode.setAttribute("fill-opacity", `${opacity}`);
+          }
+          const wrapper = svgRoot.ownerDocument!.createElementNS(SVG_NS, "g");
+          wrapper.setAttribute("transform", transform);
+          wrapper.appendChild(stripeNode);
+          wrapper.appendChild(node);
+          renderNode = wrapper;
+        } else {
+          node.setAttribute("transform", transform);
+          renderNode = node;
+        }
+      } else {
+        node.setAttribute("transform", transform);
+        renderNode = node;
+      }
 
       const g = maybeWrapNodesInFrameClipPath(
         element,
         root,
-        [node],
+        [renderNode],
         renderConfig.frameRendering,
         elementsMap,
       );
 
-      addToRoot(g || node, element);
+      addToRoot(g || renderNode, element);
       break;
     }
     case "database": {
       const shapes = ShapeCache.generateElementShape(element, renderConfig);
       const group = svgRoot.ownerDocument!.createElementNS(SVG_NS, "g");
+      if (hasStripeFill(element)) {
+        const stripeNode = appendStripeFill(
+          element,
+          svgRoot,
+          renderConfig.theme === THEME.DARK,
+        );
+        if (stripeNode) {
+          if (opacity !== 1) {
+            stripeNode.setAttribute("fill-opacity", `${opacity}`);
+          }
+          group.appendChild(stripeNode);
+        }
+      }
       for (const shape of shapes) {
         const node = roughSVGDrawWithPrecision(
           rsvg,

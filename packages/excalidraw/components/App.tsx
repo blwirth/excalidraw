@@ -8839,6 +8839,7 @@ class App extends React.Component<AppProps, AppState> {
       y: gridY,
       strokeColor: this.state.currentItemStrokeColor,
       backgroundColor: this.state.currentItemBackgroundColor,
+      secondaryBackgroundColor: this.state.currentItemSecondaryBackgroundColor,
       fillStyle: this.state.currentItemFillStyle,
       strokeWidth: this.state.currentItemStrokeWidth,
       strokeStyle: this.state.currentItemStrokeStyle,
@@ -9160,6 +9161,8 @@ class App extends React.Component<AppProps, AppState> {
               y: gridY,
               strokeColor: this.state.currentItemStrokeColor,
               backgroundColor: this.state.currentItemBackgroundColor,
+              secondaryBackgroundColor:
+                this.state.currentItemSecondaryBackgroundColor,
               fillStyle: this.state.currentItemFillStyle,
               strokeWidth: this.state.currentItemStrokeWidth,
               strokeStyle: this.state.currentItemStrokeStyle,
@@ -9187,6 +9190,8 @@ class App extends React.Component<AppProps, AppState> {
               y: gridY,
               strokeColor: this.state.currentItemStrokeColor,
               backgroundColor: this.state.currentItemBackgroundColor,
+              secondaryBackgroundColor:
+                this.state.currentItemSecondaryBackgroundColor,
               fillStyle: this.state.currentItemFillStyle,
               strokeWidth: this.state.currentItemStrokeWidth,
               strokeStyle: this.state.currentItemStrokeStyle,
@@ -9349,6 +9354,7 @@ class App extends React.Component<AppProps, AppState> {
       y: gridY,
       strokeColor: this.state.currentItemStrokeColor,
       backgroundColor: this.state.currentItemBackgroundColor,
+      secondaryBackgroundColor: this.state.currentItemSecondaryBackgroundColor,
       fillStyle: this.state.currentItemFillStyle,
       strokeWidth: this.state.currentItemStrokeWidth,
       strokeStyle: this.state.currentItemStrokeStyle,

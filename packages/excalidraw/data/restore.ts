@@ -264,8 +264,11 @@ const repairBinding = <T extends ExcalidrawArrowElement>(
 };
 
 const restoreElementWithProperties = <
-  T extends Required<Omit<ExcalidrawElement, "customData">> & {
+  T extends Required<
+    Omit<ExcalidrawElement, "customData" | "secondaryBackgroundColor">
+  > & {
     customData?: ExcalidrawElement["customData"];
+    secondaryBackgroundColor?: ExcalidrawElement["secondaryBackgroundColor"];
     /** @deprecated */
     boundElementIds?: readonly ExcalidrawElement["id"][];
     /** @deprecated */
@@ -303,6 +306,7 @@ const restoreElementWithProperties = <
     strokeColor: element.strokeColor || DEFAULT_ELEMENT_PROPS.strokeColor,
     backgroundColor:
       element.backgroundColor || DEFAULT_ELEMENT_PROPS.backgroundColor,
+    secondaryBackgroundColor: element.secondaryBackgroundColor,
     width: element.width || 0,
     height: element.height || 0,
     seed: element.seed ?? 1,

@@ -28,6 +28,7 @@
     "changeStroke": "Change stroke color",
     "background": "Background",
     "changeBackground": "Change background color",
+    "stripeColor": "Stripe color",
     "fill": "Fill",
     "strokeWidth": "Stroke width",
     "strokeStyle": "Stroke style",
