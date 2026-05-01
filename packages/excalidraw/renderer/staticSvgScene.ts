@@ -177,10 +177,6 @@ const renderElementToSvg = (
         shape,
         MAX_DECIMALS_FOR_SVG_EXPORT,
       );
-      if (opacity !== 1) {
-        node.setAttribute("stroke-opacity", `${opacity}`);
-        node.setAttribute("fill-opacity", `${opacity}`);
-      }
       node.setAttribute("stroke-linecap", "round");
 
       const transform = `translate(${offsetX || 0} ${
@@ -195,19 +191,31 @@ const renderElementToSvg = (
           renderConfig.theme === THEME.DARK,
         );
         if (stripeNode) {
-          if (opacity !== 1) {
-            stripeNode.setAttribute("fill-opacity", `${opacity}`);
-          }
+          // Apply opacity on the wrapper so it cascades multiplicatively to
+          // both the pattern fill and the rough stroke. This is more robust
+          // than per-attribute fill/stroke-opacity, especially for paint
+          // servers (patterns).
           const wrapper = svgRoot.ownerDocument!.createElementNS(SVG_NS, "g");
           wrapper.setAttribute("transform", transform);
+          if (opacity !== 1) {
+            wrapper.setAttribute("opacity", `${opacity}`);
+          }
           wrapper.appendChild(stripeNode);
           wrapper.appendChild(node);
           renderNode = wrapper;
         } else {
+          if (opacity !== 1) {
+            node.setAttribute("stroke-opacity", `${opacity}`);
+            node.setAttribute("fill-opacity", `${opacity}`);
+          }
           node.setAttribute("transform", transform);
           renderNode = node;
         }
       } else {
+        if (opacity !== 1) {
+          node.setAttribute("stroke-opacity", `${opacity}`);
+          node.setAttribute("fill-opacity", `${opacity}`);
+        }
         node.setAttribute("transform", transform);
         renderNode = node;
       }
@@ -226,16 +234,14 @@ const renderElementToSvg = (
     case "database": {
       const shapes = ShapeCache.generateElementShape(element, renderConfig);
       const group = svgRoot.ownerDocument!.createElementNS(SVG_NS, "g");
-      if (hasStripeFill(element)) {
+      const isStriped = hasStripeFill(element);
+      if (isStriped) {
         const stripeNode = appendStripeFill(
           element,
           svgRoot,
           renderConfig.theme === THEME.DARK,
         );
         if (stripeNode) {
-          if (opacity !== 1) {
-            stripeNode.setAttribute("fill-opacity", `${opacity}`);
-          }
           group.appendChild(stripeNode);
         }
       }
@@ -245,12 +251,17 @@ const renderElementToSvg = (
           shape,
           MAX_DECIMALS_FOR_SVG_EXPORT,
         );
-        if (opacity !== 1) {
+        // When striped, opacity is applied on the wrapper group so it
+        // cascades to both the pattern fill and the rough stroke.
+        if (!isStriped && opacity !== 1) {
           node.setAttribute("stroke-opacity", `${opacity}`);
           node.setAttribute("fill-opacity", `${opacity}`);
         }
         node.setAttribute("stroke-linecap", "round");
         group.appendChild(node);
+      }
+      if (isStriped && opacity !== 1) {
+        group.setAttribute("opacity", `${opacity}`);
       }
       group.setAttribute(
         "transform",
