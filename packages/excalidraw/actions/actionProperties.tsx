@@ -462,6 +462,65 @@ export const actionChangeBackgroundColor = register<
   },
 });
 
+export const actionChangeSecondaryBackgroundColor = register<
+  Pick<AppState, "currentItemSecondaryBackgroundColor">
+>({
+  name: "changeSecondaryBackgroundColor",
+  label: "labels.stripeColor",
+  trackEvent: false,
+  perform: (elements, appState, value) => {
+    if (!value?.currentItemSecondaryBackgroundColor) {
+      return {
+        appState: { ...appState, ...value },
+        captureUpdate: CaptureUpdateAction.EVENTUALLY,
+      };
+    }
+
+    return {
+      elements: changeProperty(elements, appState, (el) =>
+        newElementWith(el, {
+          secondaryBackgroundColor: value.currentItemSecondaryBackgroundColor,
+        }),
+      ),
+      appState: { ...appState, ...value },
+      captureUpdate: CaptureUpdateAction.IMMEDIATELY,
+    };
+  },
+  PanelComponent: ({ elements, appState, updateData, app }) => {
+    const { stylesPanelMode } = getStylesPanelInfo(app);
+
+    return (
+      <>
+        {stylesPanelMode === "full" && (
+          <h3 aria-hidden="true">{t("labels.stripeColor")}</h3>
+        )}
+        <ColorPicker
+          topPicks={DEFAULT_ELEMENT_BACKGROUND_PICKS}
+          palette={DEFAULT_ELEMENT_BACKGROUND_COLOR_PALETTE}
+          type="elementSecondaryBackground"
+          label={t("labels.stripeColor")}
+          color={getFormValue(
+            elements,
+            app,
+            (element) => element.secondaryBackgroundColor ?? "transparent",
+            true,
+            (hasSelection) =>
+              !hasSelection
+                ? appState.currentItemSecondaryBackgroundColor
+                : null,
+          )}
+          onChange={(color) =>
+            updateData({ currentItemSecondaryBackgroundColor: color })
+          }
+          elements={elements}
+          appState={appState}
+          updateData={updateData}
+        />
+      </>
+    );
+  },
+});
+
 export const actionChangeFillStyle = register<ExcalidrawElement["fillStyle"]>({
   name: "changeFillStyle",
   label: "labels.fill",

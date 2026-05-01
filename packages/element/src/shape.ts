@@ -236,11 +236,18 @@ export const generateRoughOptions = (
     case "database":
     case "ellipse": {
       options.fillStyle = element.fillStyle;
-      options.fill = isTransparent(element.backgroundColor)
-        ? undefined
-        : isDarkMode
-        ? applyDarkModeFilter(element.backgroundColor)
-        : element.backgroundColor;
+      // When a secondary fill color is set, the renderer paints a clean
+      // two-color stripe pattern; suppress roughjs's own fill so it only
+      // contributes the stroke.
+      const hasStripes =
+        !!element.secondaryBackgroundColor &&
+        !isTransparent(element.secondaryBackgroundColor);
+      options.fill =
+        hasStripes || isTransparent(element.backgroundColor)
+          ? undefined
+          : isDarkMode
+          ? applyDarkModeFilter(element.backgroundColor)
+          : element.backgroundColor;
       if (element.type === "ellipse") {
         options.curveFitting = 1;
       }
@@ -250,8 +257,11 @@ export const generateRoughOptions = (
     case "freedraw": {
       if (isPathALoop(element.points)) {
         options.fillStyle = element.fillStyle;
+        const hasStripes =
+          !!element.secondaryBackgroundColor &&
+          !isTransparent(element.secondaryBackgroundColor);
         options.fill =
-          element.backgroundColor === "transparent"
+          hasStripes || element.backgroundColor === "transparent"
             ? undefined
             : isDarkMode
             ? applyDarkModeFilter(element.backgroundColor)

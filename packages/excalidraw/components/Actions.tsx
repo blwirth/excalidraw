@@ -195,6 +195,9 @@ export const SelectedShapeActions = ({
       {canChangeBackgroundColor(appState, targetElements) && (
         <div>{renderAction("changeBackgroundColor")}</div>
       )}
+      {canChangeBackgroundColor(appState, targetElements) && (
+        <div>{renderAction("changeSecondaryBackgroundColor")}</div>
+      )}
       {showFillIcons && renderAction("changeFillStyle")}
 
       {(hasStrokeWidth(appState.activeTool.type) ||

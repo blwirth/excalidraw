@@ -43,6 +43,10 @@ type _ExcalidrawElementBase = Readonly<{
   y: number;
   strokeColor: string;
   backgroundColor: string;
+  /** Optional second fill color. When set and not transparent, the shape
+      renders with a diagonal-stripe pattern alternating backgroundColor and
+      this color, overriding the rough fillStyle. */
+  secondaryBackgroundColor?: string;
   fillStyle: FillStyle;
   strokeWidth: number;
   strokeStyle: StrokeStyle;
