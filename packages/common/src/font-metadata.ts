@@ -83,6 +83,15 @@ export const FONT_METADATA: Record<number, FontMetadata> = {
     },
     local: true,
   },
+  [FONT_FAMILY["Helvetica Light"]]: {
+    metrics: {
+      unitsPerEm: 2048,
+      ascender: 1577,
+      descender: -471,
+      lineHeight: 1.15,
+    },
+    local: true,
+  },
   [FONT_FAMILY.Cascadia]: {
     metrics: {
       unitsPerEm: 2048,
